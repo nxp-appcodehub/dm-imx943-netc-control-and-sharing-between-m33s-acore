@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<settings>
+    <TerminalIO>
+        <InputSource>1</InputSource>
+        <InputMode2>10</InputMode2>
+        <Filename>$PROJ_DIR$\TermIOInput.txt</Filename>
+        <InputEcho>1</InputEcho>
+        <ShowReset>0</ShowReset>
+        <InputEncodingICU>0</InputEncodingICU>
+        <OutputEncodingICU>0</OutputEncodingICU>
+    </TerminalIO>
+    <Stack>
+        <FillEnabled>0</FillEnabled>
+        <OverflowWarningsEnabled>1</OverflowWarningsEnabled>
+        <WarningThreshold>90</WarningThreshold>
+        <SpWarningsEnabled>1</SpWarningsEnabled>
+        <WarnLogOnly>1</WarnLogOnly>
+        <UseTrigger>1</UseTrigger>
+        <TriggerName>main</TriggerName>
+        <LimitSize>0</LimitSize>
+        <ByteLimit>50</ByteLimit>
+    </Stack>
+    <PlDriver>
+        <FirstRun>0</FirstRun>
+        <MemConfigValue>C:\iar\ewarm-9.60.2\arm\config\debugger\NXP\MIMX94398_M33_1.ddf</MemConfigValue>
+    </PlDriver>
+    <JLinkDriver>
+        <LeaveTargetRunning>_ 0</LeaveTargetRunning>
+        <CStepIntDis>_ 0</CStepIntDis>
+        <jlinkResetStyle>12</jlinkResetStyle>
+        <jlinkResetStrategy>0</jlinkResetStrategy>
+        <MultiCoreRunAll>0</MultiCoreRunAll>
+    </JLinkDriver>
+    <ArmDriver>
+        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
+        <EnableCache>0</EnableCache>
+    </ArmDriver>
+    <DebugChecksum>
+        <Checksum>2406922507</Checksum>
+    </DebugChecksum>
+    <Disassembly>
+        <MixedMode>1</MixedMode>
+        <InstrCount>0</InstrCount>
+    </Disassembly>
+    <Trace1>
+        <Enabled>0</Enabled>
+        <ShowSource>1</ShowSource>
+    </Trace1>
+    <CallStack>
+        <ShowArgs>0</ShowArgs>
+    </CallStack>
+    <Exceptions>
+        <StopOnUncaught>_ 0</StopOnUncaught>
+        <StopOnThrow>_ 0</StopOnThrow>
+    </Exceptions>
+    <SWOTraceHWSettings>
+        <OverrideDefaultClocks>0</OverrideDefaultClocks>
+        <CpuClock>72000000</CpuClock>
+        <ClockAutoDetect>0</ClockAutoDetect>
+        <ClockWanted>2000000</ClockWanted>
+        <JtagSpeed>2000000</JtagSpeed>
+        <Prescaler>36</Prescaler>
+        <TimeStampPrescIndex>0</TimeStampPrescIndex>
+        <TimeStampPrescData>0</TimeStampPrescData>
+        <PcSampCYCTAP>1</PcSampCYCTAP>
+        <PcSampPOSTCNT>15</PcSampPOSTCNT>
+        <PcSampIndex>0</PcSampIndex>
+        <DataLogMode>0</DataLogMode>
+        <ITMportsEnable>0</ITMportsEnable>
+        <ITMportsTermIO>0</ITMportsTermIO>
+        <ITMportsLogFile>0</ITMportsLogFile>
+        <ITMlogFile>$PROJ_DIR$\ITM.log</ITMlogFile>
+    </SWOTraceHWSettings>
+    <struct_types>
+        <Fmt0>netc_swt_tag_common_t-tpid	4	0</Fmt0>
+    </struct_types>
+    <array_types>
+        <Fmt0>uint8_t[6]	4	0</Fmt0>
+    </array_types>
+    <watch_formats>
+        <Fmt0>{W}1:addrL	4	0</Fmt0>
+        <Fmt1>{W}1:flags	4	0</Fmt1>
+        <Fmt2>{W}1:kMU_Rx0FullFlag	4	0</Fmt2>
+        <Fmt3>{W}1:rxDesc	4	0</Fmt3>
+        <Fmt4>{W}1:status	4	0</Fmt4>
+    </watch_formats>
+    <Trace2>
+        <Enabled>0</Enabled>
+        <ShowSource>0</ShowSource>
+    </Trace2>
+    <SWOTraceWindow>
+        <PcSampling>0</PcSampling>
+        <InterruptLogs>0</InterruptLogs>
+        <ForcedTimeStamps>0</ForcedTimeStamps>
+        <EventCPI>0</EventCPI>
+        <EventEXC>0</EventEXC>
+        <EventFOLD>0</EventFOLD>
+        <EventLSU>0</EventLSU>
+        <EventSLEEP>0</EventSLEEP>
+    </SWOTraceWindow>
+    <PowerLog>
+        <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
+        <ShowTimeLog>1</ShowTimeLog>
+        <Title_0>I0</Title_0>
+        <Symbol_0>0 4 0</Symbol_0>
+        <LiveEnabled>0</LiveEnabled>
+        <LiveFile />
+    </PowerLog>
+    <DataLog>
+        <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
+        <ShowTimeLog>1</ShowTimeLog>
+        <SumEnabled>0</SumEnabled>
+        <ShowTimeSum>1</ShowTimeSum>
+    </DataLog>
+    <InterruptLog>
+        <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
+        <ShowTimeLog>1</ShowTimeLog>
+        <SumEnabled>0</SumEnabled>
+        <ShowTimeSum>1</ShowTimeSum>
+        <SumSortOrder>0</SumSortOrder>
+    </InterruptLog>
+    <EventLog>
+        <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
+        <ShowTimeLog>1</ShowTimeLog>
+        <Title_0>Ch3</Title_0>
+        <Symbol_0>0 0 1</Symbol_0>
+        <Title_1>Ch2</Title_1>
+        <Symbol_1>0 0 1</Symbol_1>
+        <Title_2>Ch1</Title_2>
+        <Symbol_2>0 0 1</Symbol_2>
+        <Title_3>Ch0</Title_3>
+        <Symbol_3>0 0 1</Symbol_3>
+        <SumEnabled>0</SumEnabled>
+        <ShowTimeSum>1</ShowTimeSum>
+        <SumSortOrder>0</SumSortOrder>
+    </EventLog>
+    <TermIOLog>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+    </TermIOLog>
+    <DisassembleMode>
+        <mode>0</mode>
+    </DisassembleMode>
+    <Breakpoints2>
+        <Bp0>_ 0 "EMUL_CODE" "{C:\Users\nxa19270\work\imx943-m33s-netc-demo\devices\MIMX94398\MIMX94398_cm33_core1_COMMON.h}.935.1" 0 0 1 "" 0 "" 0</Bp0>
+        <Bp1>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2480.13" 0 0 1 "" 0 "" 0</Bp1>
+        <Bp2>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2414.16" 0 0 1 "" 0 "" 0</Bp2>
+        <Bp3>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2304.2" 0 0 1 "" 0 "" 0</Bp3>
+        <Bp4>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2293.4" 0 0 1 "" 0 "" 0</Bp4>
+        <Bp5>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2293.4" 0 0 1 "" 0 "" 0</Bp5>
+        <Bp6>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2304.2" 0 0 1 "" 0 "" 0</Bp6>
+        <Bp7>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2414.16" 0 0 1 "" 0 "" 0</Bp7>
+        <Bp8>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2480.13" 0 0 1 "" 0 "" 0</Bp8>
+        <Bp9>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2552.5" 0 0 1 "" 0 "" 0</Bp9>
+        <Bp10>_ 0 "EMUL_CODE" "{C:\Users\nxa19270\work\imx943-m33s-netc-demo\devices\MIMX94398\drivers\netc_hw\fsl_netc_hw.c}.1085.5" 0 0 1 "" 0 "" 0</Bp10>
+        <Bp11>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1544.21" 0 0 1 "" 0 "" 0</Bp11>
+        <Bp12>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1601.5" 0 0 1 "" 0 "" 0</Bp12>
+        <Bp13>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1544.21" 0 0 1 "" 0 "" 0</Bp13>
+        <Bp14>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1777.18" 0 0 1 "" 0 "" 0</Bp14>
+        <Bp15>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1262.31" 0 0 1 "" 0 "" 0</Bp15>
+        <Bp16>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1262.31" 0 0 1 "" 0 "" 0</Bp16>
+        <Bp17>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1772.5" 0 0 1 "" 0 "" 0</Bp17>
+        <Bp18>_ 0 "EMUL_CODE" "0xffc'3650" 0 0 1 "" 0 "" 0</Bp18>
+        <Bp19>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1262.31" 0 0 1 "" 0 "" 0</Bp19>
+        <Bp20>_ 0 "EMUL_CODE" "{C:\Users\nxa19270\work\imx943-m33s-netc-demo\components\srtm\services\srtm_netc_service.c}.126.5" 0 0 1 "" 0 "" 0</Bp20>
+        <Bp21>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.421.5" 0 0 1 "" 0 "" 0</Bp21>
+        <Bp22>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.311.1" 0 0 1 "" 0 "" 0</Bp22>
+        <Bp23>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.311.1" 0 0 1 "" 0 "" 0</Bp23>
+        <Bp24>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.321.5" 0 0 1 "" 0 "" 0</Bp24>
+        <Bp25>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.326.9" 0 0 1 "" 0 "" 0</Bp25>
+        <Bp26>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.409.17" 0 0 1 "" 0 "" 0</Bp26>
+        <Bp27>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.409.17" 0 0 1 "" 0 "" 0</Bp27>
+        <Bp28>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.207.9" 0 0 1 "" 0 "" 0</Bp28>
+        <Bp29>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.270.5" 0 0 1 "" 0 "" 0</Bp29>
+        <Bp30>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.276.5" 0 0 1 "" 0 "" 0</Bp30>
+        <Bp31>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.362.9" 0 0 1 "" 0 "" 0</Bp31>
+        <Bp32>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.458.5" 0 0 1 "" 0 "" 0</Bp32>
+        <Bp33>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.175.14" 0 0 1 "" 0 "" 0</Bp33>
+        <Bp34>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.179.9" 0 0 1 "" 0 "" 0</Bp34>
+        <Bp35>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.183.9" 0 0 1 "" 0 "" 0</Bp35>
+        <Bp36>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.187.9" 0 0 1 "" 0 "" 0</Bp36>
+        <Bp37>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.225.12" 0 0 1 "" 0 "" 0</Bp37>
+        <Bp38>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.452.5" 0 0 1 "" 0 "" 0</Bp38>
+        <Bp39>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.81.14" 0 0 1 "" 0 "" 0</Bp39>
+        <Bp40>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\..\..\..\..\middleware\multicore\rpmsg-lite\lib\rpmsg_lite\porting\platform\imx943_m33\rpmsg_platform.c}.465.5" 0 0 1 "" 0 "" 0</Bp40>
+        <Bp41>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\app_srtm.c}.292.5" 0 0 1 "" 0 "" 0</Bp41>
+        <Bp42>_ 0 "EMUL_CODE" "{C:\Users\nxa19270\work\imx943-m33s-netc-demo\components\srtm\srtm\srtm_dispatcher.c}.338.5" 0 0 1 "" 0 "" 0</Bp42>
+        <Bp43>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1262.31" 0 0 1 "" 0 "" 0</Bp43>
+        <Bp44>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2313.16" 0 0 1 "" 0 "" 0</Bp44>
+        <Bp45>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.1028.14" 0 0 1 "" 0 "" 0</Bp45>
+        <Bp46>_ 0 "EMUL_CODE" "{C:\Users\nxa19270\work\imx943-m33s-netc-demo\devices\MIMX94398\drivers\fsl_cpu.c}.983.1" 0 0 1 "" 0 "" 0</Bp46>
+        <Bp47>_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\netc_txrx_transfer.c}.2166.5" 0 0 1 "" 0 "" 0</Bp47>
+        <Count>48</Count>
+    </Breakpoints2>
+    <Aliases>
+        <Count>0</Count>
+        <SuppressDialog>0</SuppressDialog>
+    </Aliases>
+    <DriverProfiling>
+        <Enabled>0</Enabled>
+        <Mode>3</Mode>
+        <Graph>0</Graph>
+        <Symbiont>0</Symbiont>
+        <Exclusions />
+    </DriverProfiling>
+    <PowerProbe>
+        <Frequency>10000</Frequency>
+        <Probe0>I0</Probe0>
+        <ProbeSetup0>2 1 1 2 0 0</ProbeSetup0>
+    </PowerProbe>
+</settings>

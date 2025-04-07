@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ksdk:examples xmlns:ksdk="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd manifest.xsd">
+  <externalDefinitions>
+    <definition extID="cm7_core1_MIMX94398xxxM"/>
+    <definition extID="driver.sm_cfg.imx943evk.MIMX94398"/>
+    <definition extID="driver.irqsteer_1_soc.cm7_core1.MIMX94398"/>
+    <definition extID="driver.elec_spec.MIMX94398"/>
+    <definition extID="driver.reset.MIMX94398"/>
+    <definition extID="driver.trdc_soc.MIMX94398"/>
+    <definition extID="platform.drivers.clock.MIMX94398"/>
+    <definition extID="platform.drivers.iomuxc.MIMX94398"/>
+    <definition extID="driver.supply.MIMX94398"/>
+    <definition extID="driver.cpu.MIMX94398"/>
+    <definition extID="platform.drivers.memory.MIMX94398"/>
+    <definition extID="driver.power.MIMX94398"/>
+    <definition extID="driver.ccm.MIMX94398"/>
+    <definition extID="driver.src1.MIMX94398"/>
+    <definition extID="driver.fro.MIMX94398"/>
+    <definition extID="CMSIS_Include_core_cm.MIMX94398"/>
+    <definition extID="device.MIMX94398_CMSIS.MIMX94398"/>
+    <definition extID="device.MIMX94398_system.MIMX94398"/>
+    <definition extID="device.MIMX94398_startup.MIMX94398"/>
+    <definition extID="platform.drivers.cache_armv7_m7.MIMX94398"/>
+    <definition extID="platform.drivers.common.MIMX94398"/>
+    <definition extID="platform.drivers.fract_pll.MIMX94398"/>
+    <definition extID="platform.drivers.irqsteer.MIMX94398"/>
+    <definition extID="platform.drivers.lpi2c.MIMX94398"/>
+    <definition extID="platform.drivers.lpuart.MIMX94398"/>
+    <definition extID="platform.drivers.msgintr.MIMX94398"/>
+    <definition extID="platform.drivers.mu1.MIMX94398"/>
+    <definition extID="driver.netc_imx943.MIMX94398"/>
+    <definition extID="platform.drivers.netc.MIMX94398"/>
+    <definition extID="platform.drivers.netc_switch.MIMX94398"/>
+    <definition extID="platform.drivers.netc_phywrapper.MIMX94398"/>
+    <definition extID="platform.drivers.rgpio.MIMX94398"/>
+    <definition extID="platform.drivers.s3mu.MIMX94398"/>
+    <definition extID="platform.drivers.sramctl.MIMX94398"/>
+    <definition extID="platform.utilities.assert_lite.MIMX94398"/>
+    <definition extID="platform.utilities.misc_utilities.MIMX94398"/>
+    <definition extID="utility.str.MIMX94398"/>
+    <definition extID="utility.debug_console_lite.MIMX94398"/>
+    <definition extID="component.codec_i2c.MIMX94398"/>
+    <definition extID="driver.codec.MIMX94398"/>
+    <definition extID="component.codec_adapters.MIMX94398"/>
+    <definition extID="component.wm8962_adapter.MIMX94398"/>
+    <definition extID="driver.wm8962.MIMX94398"/>
+    <definition extID="component.i2c_adapter_interface.MIMX94398"/>
+    <definition extID="component.lpi2c_adapter.MIMX94398"/>
+    <definition extID="component.i2c_mux.MIMX94398"/>
+    <definition extID="component.i2c_mux_pca954x.MIMX94398"/>
+    <definition extID="component.enable_pca9544.MIMX94398"/>
+    <definition extID="component.enable_pca9548.MIMX94398"/>
+    <definition extID="component.at_least_one_i2c_mux_device_enabled.MIMX94398"/>
+    <definition extID="component.hal_reset.MIMX94398"/>
+    <definition extID="component.hal_reset.imx943.MIMX94398"/>
+    <definition extID="component.lpuart_adapter.MIMX94398"/>
+    <definition extID="component.hal_clock.MIMX94398"/>
+    <definition extID="component.hal_clock.imx943.MIMX94398"/>
+    <definition extID="component.hal_pinctrl.MIMX94398"/>
+    <definition extID="component.hal_pinctrl.imx943.MIMX94398"/>
+    <definition extID="component.ele_base_api.MIMX94398"/>
+    <definition extID="component.hal_power.MIMX94398"/>
+    <definition extID="component.hal_power.imx943.MIMX94398"/>
+    <definition extID="driver.pca6416a.MIMX94398"/>
+    <definition extID="driver.pcal6408.MIMX94398"/>
+    <definition extID="component.eth_phy_common.MIMX94398"/>
+    <definition extID="component.phyrtl8211f.MIMX94398"/>
+    <definition extID="component.phydp8384x.MIMX94398"/>
+    <definition extID="component.sm_clock.MIMX94398"/>
+    <definition extID="component.sm_pinctrl.MIMX94398"/>
+    <definition extID="component.sm_power.MIMX94398"/>
+    <definition extID="component.sm_reset.MIMX94398"/>
+    <definition extID="component.sm.imx943_cm7_core1.MIMX94398"/>
+    <definition extID="component.sm.crc.MIMX94398"/>
+    <definition extID="component.sm.scmi.MIMX94398"/>
+    <definition extID="component.sm.smt.MIMX94398"/>
+    <definition extID="iar"/>
+    <definition extID="armgcc"/>
+    <definition extID="mcuxpresso"/>
+    <definition extID="com.nxp.mcuxpresso"/>
+  </externalDefinitions>
+  <example id="imx943evk_netc_txrx_transfer_cm7_core1" name="netc_txrx_transfer_cm7_core1" device_core="cm7_core1_MIMX94398xxxM" dependency="driver.sm_cfg.imx943evk.MIMX94398 driver.irqsteer_1_soc.cm7_core1.MIMX94398 driver.elec_spec.MIMX94398 driver.reset.MIMX94398 driver.trdc_soc.MIMX94398 platform.drivers.clock.MIMX94398 platform.drivers.iomuxc.MIMX94398 driver.supply.MIMX94398 driver.cpu.MIMX94398 platform.drivers.memory.MIMX94398 driver.power.MIMX94398 driver.ccm.MIMX94398 driver.src1.MIMX94398 driver.fro.MIMX94398 CMSIS_Include_core_cm.MIMX94398 device.MIMX94398_CMSIS.MIMX94398 device.MIMX94398_system.MIMX94398 device.MIMX94398_startup.MIMX94398 platform.drivers.cache_armv7_m7.MIMX94398 platform.drivers.common.MIMX94398 platform.drivers.fract_pll.MIMX94398 platform.drivers.irqsteer.MIMX94398 platform.drivers.lpi2c.MIMX94398 platform.drivers.lpuart.MIMX94398 platform.drivers.msgintr.MIMX94398 platform.drivers.mu1.MIMX94398 driver.netc_imx943.MIMX94398 platform.drivers.netc.MIMX94398 platform.drivers.netc_switch.MIMX94398 platform.drivers.netc_phywrapper.MIMX94398 platform.drivers.rgpio.MIMX94398 platform.drivers.s3mu.MIMX94398 platform.drivers.sramctl.MIMX94398 platform.utilities.assert_lite.MIMX94398 platform.utilities.misc_utilities.MIMX94398 utility.str.MIMX94398 utility.debug_console_lite.MIMX94398 component.codec_i2c.MIMX94398 driver.codec.MIMX94398 component.codec_adapters.MIMX94398 component.wm8962_adapter.MIMX94398 driver.wm8962.MIMX94398 component.i2c_adapter_interface.MIMX94398 component.lpi2c_adapter.MIMX94398 component.i2c_mux.MIMX94398 component.i2c_mux_pca954x.MIMX94398 component.enable_pca9544.MIMX94398 component.enable_pca9548.MIMX94398 component.at_least_one_i2c_mux_device_enabled.MIMX94398 component.hal_reset.MIMX94398 component.hal_reset.imx943.MIMX94398 component.lpuart_adapter.MIMX94398 component.hal_clock.MIMX94398 component.hal_clock.imx943.MIMX94398 component.hal_pinctrl.MIMX94398 component.hal_pinctrl.imx943.MIMX94398 component.ele_base_api.MIMX94398 component.hal_power.MIMX94398 component.hal_power.imx943.MIMX94398 driver.pca6416a.MIMX94398 driver.pcal6408.MIMX94398 component.eth_phy_common.MIMX94398 component.phyrtl8211f.MIMX94398 component.phydp8384x.MIMX94398 component.sm_clock.MIMX94398 component.sm_pinctrl.MIMX94398 component.sm_power.MIMX94398 component.sm_reset.MIMX94398 component.sm.imx943_cm7_core1.MIMX94398 component.sm.crc.MIMX94398 component.sm.scmi.MIMX94398 component.sm.smt.MIMX94398" category="driver_examples/netc">
+    <projects>
+      <project type="com.crt.advproject.projecttype.exe" nature="org.eclipse.cdt.core.cnature"/>
+    </projects>
+    <toolchainSettings>
+      <toolchainSetting id_refs="com.nxp.mcuxpresso">
+        <option id="gnu.c.compiler.option.preprocessor.def.symbols" type="stringList">
+          <value>MCUXPRESSO_SDK</value>
+          <value>PRINTF_ADVANCED_ENABLE=1</value>
+          <value>SDK_NETC_USED=1</value>
+          <value>SDK_DEBUGCONSOLE=1</value>
+          <value>MCUX_META_BUILD</value>
+          <value>CPU_MIMX94398AVKM_cm7_core1</value>
+          <value>FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL=1</value>
+          <value>SDK_I2C_BASED_COMPONENT_USED=1</value>
+          <value>CODEC_MULTI_ADAPTERS=1</value>
+          <value>CODEC_WM8962_ENABLE</value>
+          <value>MCUX_ENABLE_PCA9544</value>
+          <value>MCUX_ENABLE_PCA9548</value>
+        </option>
+        <option id="gnu.c.link.option.nostdlibs" type="boolean">
+          <value>true</value>
+        </option>
+        <option id="com.crt.advproject.link.fpu" type="enum">
+          <value>com.crt.advproject.link.fpu.fpv5dp.hard</value>
+        </option>
+        <option id="com.crt.advproject.link.memory.heapAndStack" type="string">
+          <value>&amp;Heap:Default;Default;Default&amp;Stack:Default;Default;0x1000</value>
+        </option>
+        <option id="gnu.c.link.option.other" type="stringList">
+          <value>-no-warn-rwx-segments</value>
+        </option>
+        <option id="gnu.c.link.option.group" type="boolean">
+          <value>true</value>
+        </option>
+        <option id="gnu.c.compiler.option.optimization.flags" type="string">
+          <value>-fno-common</value>
+        </option>
+        <option id="com.crt.advproject.c.misc.dialect" type="enum">
+          <value>com.crt.advproject.misc.dialect.gnu99</value>
+        </option>
+        <option id="com.crt.advproject.gcc.fpu" type="enum">
+          <value>com.crt.advproject.gcc.fpu.fpv5dp.hard</value>
+        </option>
+        <option id="gnu.c.compiler.option.misc.other" type="string">
+          <value>-c -ffunction-sections -fdata-sections -fno-builtin -mthumb</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.allwarn" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="gnu.c.compiler.option.warnings.toerrors" type="boolean">
+          <value>false</value>
+        </option>
+        <option id="com.crt.advproject.gas.fpu" type="enum">
+          <value>com.crt.advproject.gas.fpu.fpv5dp.hard</value>
+        </option>
+      </toolchainSetting>
+    </toolchainSettings>
+    <include_paths>
+      <include_path path="." project_relative_path="source" type="c_include"/>
+      <include_path path="." project_relative_path="board" type="c_include"/>
+      <include_path path="." project_relative_path="source" type="asm_include"/>
+    </include_paths>
+    <source path="iar" project_relative_path="./" type="workspace" toolchain="iar">
+      <files mask="netc_txrx_transfer_cm7_core1.ewd"/>
+      <files mask="netc_txrx_transfer_cm7_core1.ewp"/>
+      <files mask="netc_txrx_transfer_cm7_core1.eww"/>
+    </source>
+    <source path="armgcc" project_relative_path="./" type="workspace" toolchain="armgcc">
+      <files mask="build_all.bat"/>
+      <files mask="build_all.sh"/>
+      <files mask="clean.bat"/>
+      <files mask="clean.sh"/>
+      <files mask="CMakeLists.txt"/>
+      <files mask="flags.cmake"/>
+      <files mask="config.cmake"/>
+      <files mask="build_debug.bat"/>
+      <files mask="build_debug.sh"/>
+      <files mask="build_release.bat"/>
+      <files mask="build_release.sh"/>
+    </source>
+    <source path="../../../../../../devices/MIMX94398" project_relative_path="./" type="workspace" toolchain="armgcc">
+      <files mask="all_lib_device.cmake"/>
+    </source>
+    <source path="." project_relative_path="source" type="src">
+      <files mask="netc_txrx_transfer.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="board.h"/>
+      <files mask="clock_config.h"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="board.c"/>
+      <files mask="clock_config.c"/>
+    </source>
+    <source path="iar" project_relative_path="MIMX94398/iar" type="linker" toolchain="iar">
+      <files mask="MIMX94398_cm7_core1_ram.icf"/>
+    </source>
+    <source path="armgcc" project_relative_path="MIMX94398/armgcc" type="linker" toolchain="armgcc">
+      <files mask="MIMX94398_cm7_core1_ram.ld"/>
+    </source>
+    <source path="." project_relative_path="board" type="src">
+      <files mask="pin_mux.c"/>
+      <files mask="hardware_init.c"/>
+    </source>
+    <source path="." project_relative_path="board" type="c_include">
+      <files mask="pin_mux.h"/>
+      <files mask="app.h"/>
+    </source>
+    <source path="." project_relative_path="source" type="c_preinclude">
+      <files mask="mcux_config.h"/>
+    </source>
+    <source path="." project_relative_path="doc" type="doc">
+      <files mask="readme.md"/>
+    </source>
+  </example>
+</ksdk:examples>

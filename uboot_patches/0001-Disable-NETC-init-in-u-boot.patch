@@ -1,0 +1,26 @@
+From a5e89ab578d1a2a3884239bb1202e0da6910ad94 Mon Sep 17 00:00:00 2001
+From: Radu Bulie <radu-andrei.bulie@nxp.com>
+Date: Tue, 16 Sep 2025 18:00:53 +0300
+Subject: [PATCH] Disable NETC init in u-boot
+
+Signed-off-by: Radu Bulie <radu-andrei.bulie@nxp.com>
+---
+ board/freescale/imx94_evk/imx94_evk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/board/freescale/imx94_evk/imx94_evk.c b/board/freescale/imx94_evk/imx94_evk.c
+index cac87d5ba37..0b4b2704054 100644
+--- a/board/freescale/imx94_evk/imx94_evk.c
++++ b/board/freescale/imx94_evk/imx94_evk.c
+@@ -314,7 +314,7 @@ int board_init(void)
+ 	setup_typec();
+ #endif
+ 
+-	netc_init();
++	//netc_init();
+ 
+ 	xspi_nor_setup();
+ 
+-- 
+2.34.1
+

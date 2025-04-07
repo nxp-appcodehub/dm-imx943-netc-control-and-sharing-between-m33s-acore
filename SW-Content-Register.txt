@@ -1,0 +1,16 @@
+Release Name:        dm-imx943-netc-control-and-sharing-between-m33s-acore
+Release Version:     1.0
+Outgoing License:    LA_OPT_Online Code Hosting NXP_Software_License - v1.4 May 2025 
+License in File:     LICENSE.txt
+Description:         NETC switch control PoC demonstrates the NETC switch capabilities  on iMX943 and PCIe SR-IOV by sharing ENETC3 via VSIs.
+Release location:    https://github.com/nxp-appcodehub/dm-imx943-netc-control-and-sharing-between-m33s-acore
+Origin:              NXP (BSD-3-clause)
+                     NXP (MIT)
+					 ITE (BSD-3-Clause)
+                     ARM CMSIS v6.1.0 (Apache-2.0) -  https://github.com/ARM-software/CMSIS_6/releases/tag/v6.1.0                                        
+					 FreeRTOS kernel v11.0.1 (MIT)  - https://github.com/FreeRTOS/FreeRTOS-Kernel
+					 RPMsg-Lite 5.1.0 (BSD-3-Clause) - https://github.com/NXPmicro/rpmsg-lite			
+					 Linux kernel lf-6.12.3-imx943-er1 (GPL-2.0)		- https://github.com/nxp-imx/linux-imx (The distributed patches are intended to be applied on an external distribution)
+					 U-Boot lf-6.12.3-imx943-er1(GPL-2.0)				- https://github.com/nxp-imx/uboot-imx (The distributed patches are intended to be applied on an external distribution)
+					 System Manager lf-6.12.3-imx943-er1 (BSD-3-clause) - https://github.com/nxp-imx/imx-sm  (The distributed patches are intended to be applied on an external distribution)
+					 imx-mkimage lf-6.12.3-imx943-er1 (GPL-2.0)	        - https://github.com/nxp-imx/imx-mkimage (The distributed patches are intended to be applied on an external distribution)

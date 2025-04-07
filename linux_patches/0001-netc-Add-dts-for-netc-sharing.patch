@@ -1,0 +1,25 @@
+From 4f7d21d1c16f04588b3470ea0a41657f7e6dde9e Mon Sep 17 00:00:00 2001
+From: Radu Bulie <radu-andrei.bulie@nxp.com>
+Date: Tue, 16 Sep 2025 22:30:55 +0300
+Subject: [PATCH] netc: Add dts for netc sharing
+
+Signed-off-by: Radu Bulie <radu-andrei.bulie@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index a2403f98e4e0..cc047e408d11 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -545,6 +545,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx943-evk-mqs.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx943-evk-sdwifi.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx943-evk-sgmii.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx943-evk-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx943-evk-netc-share.dtb
+ 
+ imx943-evk-pcie1-ep-dtbs := imx943-evk.dtb imx943-evk-pcie1-ep.dtbo
+ dtb-$(CONFIG_ARCH_MXC) += imx943-evk-pcie1-ep.dtb
+-- 
+2.34.1
+

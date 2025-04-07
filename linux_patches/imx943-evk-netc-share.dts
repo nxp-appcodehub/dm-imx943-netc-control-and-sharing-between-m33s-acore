@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright 2025 NXP
+ */
+
+#include "imx943-evk.dts"
+
+/ {
+
+
+	aliases {
+		/delete-property/ ethernet0;
+		/delete-property/ ethernet1;
+		/delete-property/ ethernet2;
+	};
+	
+	soc {
+                netc_bus0: pcie@82224000 {
+                        compatible = "nxp,netc-rpmsg-pci-host-ecam";
+                        reg = <0x0 0x82224000 0x0 0x100000>;
+                        /* Must be 3. */
+                        #address-cells = <3>;
+                        /* Must be 2. */
+                        #size-cells = <2>;
+                        msi-parent = <&its>;
+                        device_type = "pci";
+                        bus-range = <0x0 0x0>;
+                        msi-map =  <0x00 &its 0x68 0x1>,
+				   <0x40 &its 0x69 0x1>, //ENETC3 VF0
+                                   <0x80 &its 0x6a 0x1>, //ENETC3 VF1
+                                   <0xC0 &its 0x6b 0x1>; //ENETC3 VF2
+
+
+                                  /* ENETC3 - non-prefetchable memory */
+                        ranges = <0x02000000 0x0 0x4CD40000  0x0 0x4CD40000  0x0 0x40000
+                                  /* ENETC3: VF0-2 BAR0 - non-prefetchable memory */
+                                  0x02000000 0x0 0x4CE50000  0x0 0x4CE50000  0x0 0x30000
+                                  /* ENETC3: VF0-2 BAR2 - prefetchable memory */
+                                  0x42000000 0x0 0x4ce80000  0x0 0x4ce80000  0x0 0x30000>;
+                        power-domains = <&scmi_devpd IMX94_PD_NETC>;
+
+                        enetc3: ethernet@0,0 {
+				compatible = "pci1131,080b";
+                                reg = <0x0 0 0 0 0>;
+				fixed-link {
+                                                speed = <2500>;
+                                                full-duplex;
+                                                pause;
+                                        };
+
+                        };
+                };
+
+        };
+};
+
+/delete-node/ &netc_blk_ctrl;
+/delete-node/ &pinctrl_eth3;
+/delete-node/ &pinctrl_eth4;
+/delete-node/ &pinctrl_switch;

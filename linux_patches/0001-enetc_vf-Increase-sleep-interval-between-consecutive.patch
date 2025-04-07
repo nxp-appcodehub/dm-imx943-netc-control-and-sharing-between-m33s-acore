@@ -1,0 +1,26 @@
+From a4c218aa00041c29b7a568c03a7f26e5de6907b8 Mon Sep 17 00:00:00 2001
+From: Radu Bulie <radu-andrei.bulie@nxp.com>
+Date: Tue, 16 Sep 2025 22:14:49 +0300
+Subject: [PATCH] enetc_vf: Increase sleep interval between consecutive calls
+
+Signed-off-by: Radu Bulie <radu-andrei.bulie@nxp.com>
+---
+ drivers/net/ethernet/freescale/enetc/enetc_vf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_vf.c b/drivers/net/ethernet/freescale/enetc/enetc_vf.c
+index e1df8316910f..06e810d665fc 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_vf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_vf.c
+@@ -48,7 +48,7 @@ static int enetc_msg_vsi_send(struct enetc_si *si, struct enetc_msg_swbd *msg)
+ 		enetc_msg_vsi_write_msg(&si->hw, msg);
+ 		err = read_poll_timeout(enetc_rd, vsimsgsr,
+ 					!(vsimsgsr & ENETC_VSIMSGSR_MB),
+-					100, 100000, false, &si->hw, ENETC_VSIMSGSR);
++					10000, 100000, false, &si->hw, ENETC_VSIMSGSR);
+ 	}
+ 
+ 	if (err) {
+-- 
+2.34.1
+

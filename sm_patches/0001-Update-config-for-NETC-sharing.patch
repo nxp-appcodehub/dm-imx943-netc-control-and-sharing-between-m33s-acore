@@ -1,0 +1,354 @@
+From 6517bc5cab6055dd258cbda664b72d0c205c898b Mon Sep 17 00:00:00 2001
+From: Radu Bulie <radu-andrei.bulie@nxp.com>
+Date: Tue, 16 Sep 2025 22:39:50 +0300
+Subject: [PATCH] Update config for NETC sharing
+
+Signed-off-by: Radu Bulie <radu-andrei.bulie@nxp.com>
+---
+ configs/mx94evk.cfg | 252 ++++++++++++++++++++++++--------------------
+ 1 file changed, 140 insertions(+), 112 deletions(-)
+
+diff --git a/configs/mx94evk.cfg b/configs/mx94evk.cfg
+index f25768d..621b649 100755
+--- a/configs/mx94evk.cfg
++++ b/configs/mx94evk.cfg
+@@ -355,10 +355,21 @@ SYS                      PRIV
+ # Resources
+ 
+ M33P_S              OWNER  # CPUs must be first
++ANATOP		    OWNER
+ IRQSTEER_M33_S      OWNER
+ LPTPM5              OWNER
+ LPTPM6              OWNER
+ LPUART8             OWNER, test
++AXBS_NETC           OWNER
++CCM                 OWNER
++BLK_CTRL_NETCMIX    OWNER
++CLOCK_EXT           OWNER
++CLOCK_EXT1          OWNER
++CLOCK_EXT2          OWNER
++CLOCK_OUT1          OWNER
++CLOCK_OUT2          OWNER
++CLOCK_OUT3          OWNER
++CLOCK_OUT4          OWNER
+ M33S_CACHE_CTRL     OWNER
+ M33S_TCM_MCM        OWNER
+ M33_S_PCF           OWNER
+@@ -377,11 +388,128 @@ MU_ELE8             OWNER
+ OCRAM_S_MCM         OWNER
+ TSTMR2              READONLY
+ WDOG7               OWNER
++NETC                OWNER
++NETC0               OWNER
++NETC1               OWNER
++NETC2               OWNER
++NETC3               OWNER
++NETC_ECAM           OWNER
++NETC_EMDIO0         OWNER
++NETC_IERB           OWNER
++NETC_LDID0          OWNER, sid=0x20
++NETC_LDID1          OWNER, sid=0x21
++NETC_LDID2          OWNER, sid=0x22
++NETC_LDID3          OWNER, sid=0x23
++NETC_LDID4          OWNER, sid=0x24
++NETC_LDID5          OWNER, sid=0x25
++NETC_LDID6          OWNER, sid=0x26
++NETC_LDID7          OWNER, sid=0x27
++NETC_LDID8          OWNER, sid=0x28
++NETC_SWITCH0        OWNER
++NETC_TIMER0         OWNER
++NETC_TIMER1         OWNER
++NETC_TIMER2         OWNER
++LPI2C6               OWNER
++LPI2C3               OWNER
++MSGINTR1            OWNER
++MSGINTR2            OWNER
++MSGINTR3            OWNER
++MSGINTR4            OWNER
++MSGINTR5            OWNER
++MSGINTR6            OWNER
++MSGINTR7            OWNER
++MSGINTR8            OWNER
++
+ 
+ # Pins
+ 
++PIN_CCM_CLKO1        OWNER
++PIN_CCM_CLKO2        OWNER
++PIN_CCM_CLKO3        OWNER
++PIN_CCM_CLKO4        OWNER
+ PIN_DAP_TCLK_SWCLK  OWNER
+ PIN_DAP_TMS_SWDIO   OWNER
++PIN_ETH0_COL         OWNER
++PIN_ETH0_CRS         OWNER
++PIN_ETH0_RXD0        OWNER
++PIN_ETH0_RXD1        OWNER
++PIN_ETH0_RXD2        OWNER
++PIN_ETH0_RXD3        OWNER
++PIN_ETH0_RX_CLK      OWNER
++PIN_ETH0_RX_DV       OWNER
++PIN_ETH0_RX_ER       OWNER
++PIN_ETH0_TXD0        OWNER
++PIN_ETH0_TXD1        OWNER
++PIN_ETH0_TXD2        OWNER
++PIN_ETH0_TXD3        OWNER
++PIN_ETH0_TX_CLK      OWNER
++PIN_ETH0_TX_EN       OWNER
++PIN_ETH0_TX_ER       OWNER
++PIN_ETH1_COL         OWNER
++PIN_ETH1_CRS         OWNER
++PIN_ETH1_RXD0        OWNER
++PIN_ETH1_RXD1        OWNER
++PIN_ETH1_RXD2        OWNER
++PIN_ETH1_RXD3        OWNER
++PIN_ETH1_RX_CLK      OWNER
++PIN_ETH1_RX_DV       OWNER
++PIN_ETH1_RX_ER       OWNER
++PIN_ETH1_TXD0        OWNER
++PIN_ETH1_TXD1        OWNER
++PIN_ETH1_TXD2        OWNER
++PIN_ETH1_TXD3        OWNER
++PIN_ETH1_TX_CLK      OWNER
++PIN_ETH1_TX_EN       OWNER
++PIN_ETH1_TX_ER       OWNER
++PIN_ETH2_MDC_GPIO1   OWNER
++PIN_ETH2_MDIO_GPIO2  OWNER
++PIN_ETH2_RXD0        OWNER
++PIN_ETH2_RXD1        OWNER
++PIN_ETH2_RXD2        OWNER
++PIN_ETH2_RXD3        OWNER
++PIN_ETH2_RX_CLK      OWNER
++PIN_ETH2_RX_CTL      OWNER
++PIN_ETH2_TXD0        OWNER
++PIN_ETH2_TXD1        OWNER
++PIN_ETH2_TXD2        OWNER
++PIN_ETH2_TXD3        OWNER
++PIN_ETH2_TX_CLK      OWNER
++PIN_ETH2_TX_CTL      OWNER
++PIN_ETH3_MDC_GPIO1   OWNER
++PIN_ETH3_MDIO_GPIO2  OWNER
++PIN_ETH3_RXD0        OWNER
++PIN_ETH3_RXD1        OWNER
++PIN_ETH3_RXD2        OWNER
++PIN_ETH3_RXD3        OWNER
++PIN_ETH3_RX_CLK      OWNER
++PIN_ETH3_RX_CTL      OWNER
++PIN_ETH3_TXD0        OWNER
++PIN_ETH3_TXD1        OWNER
++PIN_ETH3_TXD2        OWNER
++PIN_ETH3_TXD3        OWNER
++PIN_ETH3_TX_CLK      OWNER
++PIN_ETH3_TX_CTL      OWNER
++PIN_ETH4_MDC_GPIO1   OWNER
++PIN_ETH4_MDIO_GPIO2  OWNER
++PIN_ETH4_RXD0        OWNER
++PIN_ETH4_RXD1        OWNER
++PIN_ETH4_RXD2        OWNER
++PIN_ETH4_RXD3        OWNER
++PIN_ETH4_RX_CLK      OWNER
++PIN_ETH4_RX_CTL      OWNER
++PIN_ETH4_TXD0        OWNER
++PIN_ETH4_TXD1        OWNER
++PIN_ETH4_TXD2        OWNER
++PIN_ETH4_TXD3        OWNER
++PIN_ETH4_TX_CLK      OWNER
++PIN_ETH4_TX_CTL      OWNER
++PIN_GPIO_IO12        OWNER
++PIN_GPIO_IO13        OWNER
++PIN_GPIO_IO28        OWNER
++PIN_GPIO_IO29        OWNER
++PIN_GPIO_IO16        OWNER
++PIN_GPIO_IO17        OWNER
++
+ 
+ # Memory
+ 
+@@ -390,8 +518,7 @@ OCRAM_S2            EXEC, begin=0x020880000, end=0x0208FFFFF
+ OCRAM_S3            EXEC, begin=0x020900000, end=0x02097FFFF
+ M33S_TCM_CODE       EXEC, begin=0x0209c0000, end=0x0209FFFFF
+ M33S_TCM_SYS        EXEC, begin=0x020A00000, end=0x020A3FFFF
+-DDR                 EXEC, begin=0x086000000, end=0x089FFFFFF
+-
++DDR                 EXEC, begin=0x082000000, end=0x089FFFFFF
+ # Faults
+ 
+ FAULT_M33_SYNC_LOCKUP  OWNER, reaction=lm_reset
+@@ -834,19 +961,11 @@ ADC                 OWNER
+ BLK_CTRL_CORTEX     OWNER
+ BLK_CTRL_DISPLAYMIX OWNER
+ BLK_CTRL_HSIOMIX    OWNER
+-BLK_CTRL_NETCMIX    OWNER
+ BLK_CTRL_NPUMIX     OWNER, test
+ CAN_FD2             OWNER
+ CAN_FD3             OWNER
+ CAN_FD4             OWNER
+ CAN_FD5             OWNER
+-CLOCK_EXT           OWNER
+-CLOCK_EXT1          OWNER
+-CLOCK_EXT2          OWNER
+-CLOCK_OUT1          OWNER
+-CLOCK_OUT2          OWNER
+-CLOCK_OUT3          OWNER
+-CLOCK_OUT4          OWNER
+ DDR_PM              ACCESS
+ ECAT                OWNER
+ EDMA1_MP            OWNER
+@@ -1038,30 +1157,11 @@ MU16_B              OWNER
+ MU17_B              OWNER
+ MU_ELE3             OWNER
+ MU_ELE4             OWNER
+-NETC                OWNER
+-NETC0               OWNER
+-NETC1               OWNER
+-NETC2               OWNER
+-NETC3               OWNER
+-NETC_ECAM           OWNER
+-NETC_EMDIO0         OWNER
+-NETC_IERB           OWNER
+-NETC_LDID0          OWNER, sid=0x20
+-NETC_LDID1          OWNER, sid=0x21
+-NETC_LDID2          OWNER, sid=0x22
+-NETC_LDID3          OWNER, sid=0x23
+-NETC_LDID4          OWNER, sid=0x24
+-NETC_LDID5          OWNER, sid=0x25
+-NETC_LDID6          OWNER, sid=0x26
+-NETC_LDID7          OWNER, sid=0x27
+-NETC_LDID8          OWNER, sid=0x28
++
++
+ NETC_LDID9          OWNER, sid=0x29
+ NETC_LDID10         OWNER, sid=0x2A
+ NETC_LDID11         OWNER, sid=0x2B
+-NETC_SWITCH0        OWNER
+-NETC_TIMER0         OWNER
+-NETC_TIMER1         OWNER
+-NETC_TIMER2         OWNER
+ NETC_VSI0           OWNER
+ NETC_VSI1           OWNER
+ NETC_VSI2           OWNER
+@@ -1111,6 +1211,14 @@ WDOG3               OWNER
+ WDOG4               OWNER
+ XSPI1               OWNER
+ XSPI2               OWNER
++MSGINTR1            OWNER
++MSGINTR3            OWNER
++MSGINTR4            OWNER
++MSGINTR5            OWNER
++MSGINTR6            OWNER
++MSGINTR7            OWNER
++MSGINTR8            OWNER
++
+ 
+ # Pins
+ 
+@@ -1120,80 +1228,6 @@ PIN_CCM_CLKO3        OWNER
+ PIN_CCM_CLKO4        OWNER
+ PIN_DAP_TDI          OWNER
+ PIN_DAP_TDO_TRACESWO OWNER
+-PIN_ETH0_COL         OWNER
+-PIN_ETH0_CRS         OWNER
+-PIN_ETH0_RXD0        OWNER
+-PIN_ETH0_RXD1        OWNER
+-PIN_ETH0_RXD2        OWNER
+-PIN_ETH0_RXD3        OWNER
+-PIN_ETH0_RX_CLK      OWNER
+-PIN_ETH0_RX_DV       OWNER
+-PIN_ETH0_RX_ER       OWNER
+-PIN_ETH0_TXD0        OWNER
+-PIN_ETH0_TXD1        OWNER
+-PIN_ETH0_TXD2        OWNER
+-PIN_ETH0_TXD3        OWNER
+-PIN_ETH0_TX_CLK      OWNER
+-PIN_ETH0_TX_EN       OWNER
+-PIN_ETH0_TX_ER       OWNER
+-PIN_ETH1_COL         OWNER
+-PIN_ETH1_CRS         OWNER
+-PIN_ETH1_RXD0        OWNER
+-PIN_ETH1_RXD1        OWNER
+-PIN_ETH1_RXD2        OWNER
+-PIN_ETH1_RXD3        OWNER
+-PIN_ETH1_RX_CLK      OWNER
+-PIN_ETH1_RX_DV       OWNER
+-PIN_ETH1_RX_ER       OWNER
+-PIN_ETH1_TXD0        OWNER
+-PIN_ETH1_TXD1        OWNER
+-PIN_ETH1_TXD2        OWNER
+-PIN_ETH1_TXD3        OWNER
+-PIN_ETH1_TX_CLK      OWNER
+-PIN_ETH1_TX_EN       OWNER
+-PIN_ETH1_TX_ER       OWNER
+-PIN_ETH2_MDC_GPIO1   OWNER
+-PIN_ETH2_MDIO_GPIO2  OWNER
+-PIN_ETH2_RXD0        OWNER
+-PIN_ETH2_RXD1        OWNER
+-PIN_ETH2_RXD2        OWNER
+-PIN_ETH2_RXD3        OWNER
+-PIN_ETH2_RX_CLK      OWNER
+-PIN_ETH2_RX_CTL      OWNER
+-PIN_ETH2_TXD0        OWNER
+-PIN_ETH2_TXD1        OWNER
+-PIN_ETH2_TXD2        OWNER
+-PIN_ETH2_TXD3        OWNER
+-PIN_ETH2_TX_CLK      OWNER
+-PIN_ETH2_TX_CTL      OWNER
+-PIN_ETH3_MDC_GPIO1   OWNER
+-PIN_ETH3_MDIO_GPIO2  OWNER
+-PIN_ETH3_RXD0        OWNER
+-PIN_ETH3_RXD1        OWNER
+-PIN_ETH3_RXD2        OWNER
+-PIN_ETH3_RXD3        OWNER
+-PIN_ETH3_RX_CLK      OWNER
+-PIN_ETH3_RX_CTL      OWNER
+-PIN_ETH3_TXD0        OWNER
+-PIN_ETH3_TXD1        OWNER
+-PIN_ETH3_TXD2        OWNER
+-PIN_ETH3_TXD3        OWNER
+-PIN_ETH3_TX_CLK      OWNER
+-PIN_ETH3_TX_CTL      OWNER
+-PIN_ETH4_MDC_GPIO1   OWNER
+-PIN_ETH4_MDIO_GPIO2  OWNER
+-PIN_ETH4_RXD0        OWNER
+-PIN_ETH4_RXD1        OWNER
+-PIN_ETH4_RXD2        OWNER
+-PIN_ETH4_RXD3        OWNER
+-PIN_ETH4_RX_CLK      OWNER
+-PIN_ETH4_RX_CTL      OWNER
+-PIN_ETH4_TXD0        OWNER
+-PIN_ETH4_TXD1        OWNER
+-PIN_ETH4_TXD2        OWNER
+-PIN_ETH4_TXD3        OWNER
+-PIN_ETH4_TX_CLK      OWNER
+-PIN_ETH4_TX_CTL      OWNER
+ PIN_FCCU_ERR0        OWNER
+ PIN_GPIO_IO00        OWNER
+ PIN_GPIO_IO01        OWNER
+@@ -1207,20 +1241,14 @@ PIN_GPIO_IO08        OWNER
+ PIN_GPIO_IO09        OWNER
+ PIN_GPIO_IO10        OWNER
+ PIN_GPIO_IO11        OWNER
+-PIN_GPIO_IO12        OWNER
+-PIN_GPIO_IO13        OWNER
+ PIN_GPIO_IO14        OWNER
+ PIN_GPIO_IO15        OWNER
+-PIN_GPIO_IO16        OWNER
+-PIN_GPIO_IO17        OWNER
+ PIN_GPIO_IO18        OWNER
+ PIN_GPIO_IO19        OWNER
+ PIN_GPIO_IO20        OWNER
+ PIN_GPIO_IO21        OWNER
+ PIN_GPIO_IO22        OWNER
+ PIN_GPIO_IO23        OWNER
+-PIN_GPIO_IO28        OWNER
+-PIN_GPIO_IO29        OWNER
+ PIN_GPIO_IO30        OWNER
+ PIN_GPIO_IO30        OWNER
+ PIN_GPIO_IO31        OWNER
+@@ -1312,4 +1340,4 @@ OCRAM_S2            EXEC, begin=0x020880000, end=0x0208A1FFF
+ OCRAM               EXEC, begin=0x0204C0000, size=96K
+ DDR                 EXEC, begin=0x082000000, end=0x085FFFFFF
+ DDR                 EXEC, begin=0x08E000000, end=0x87FFFFFFF
+-
++M33S_TCM_SYS        DATA, begin=0x020A00000, end=0x020A3FFFF
+-- 
+2.34.1
+
