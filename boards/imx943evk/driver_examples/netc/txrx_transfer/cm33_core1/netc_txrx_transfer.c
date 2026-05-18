@@ -110,6 +110,9 @@ AT_NONCACHEABLE_SECTION_ALIGN(static uint8_t g_txFrame[EXAMPLE_EP_TEST_FRAME_SIZ
 #if !(defined(FSL_FEATURE_NETC_HAS_NO_SWITCH) && FSL_FEATURE_NETC_HAS_NO_SWITCH)
 AT_NONCACHEABLE_SECTION_ALIGN(static netc_tx_bd_t g_mgmtTxBuffDescrip[EXAMPLE_EP_TXBD_NUM], EXAMPLE_EP_BD_ALIGN);
 AT_NONCACHEABLE_SECTION_ALIGN(static netc_cmd_bd_t g_cmdBuffDescrip[EXAMPLE_EP_TXBD_NUM], EXAMPLE_EP_BD_ALIGN);
+AT_NONCACHEABLE_SECTION_ALIGN(static netc_cmd_bd_t g_cmdBuffDescrip_enet3[EXAMPLE_EP_TXBD_NUM], EXAMPLE_EP_BD_ALIGN);
+
+
 #endif
 AT_NONCACHEABLE_SECTION(static uint8_t g_rxFrame[EXAMPLE_EP_RXBUFF_SIZE_ALIGN]);
 static uint64_t rxBuffAddrArray[EXAMPLE_EP_RXBD_NUM];
@@ -1984,6 +1987,11 @@ status_t APP_SWT_XferLoopBack(void)
     g_ep_config.siConfig.rxRingUse = 1;
     g_ep_config.reclaimCallback    = APP_ReclaimCallback;
     g_ep_config.msixEntry          = &msixEntry[0];
+    
+    g_ep_config.cmdBdrConfig.bdBase   = &g_cmdBuffDescrip_enet3[0];
+    g_ep_config.cmdBdrConfig.bdLength = 8U;
+
+    
 #if (NETC_VSI_NUM_USED > 0)
     g_ep_config.entryNum           = 3;
 #else
