@@ -312,20 +312,11 @@ status_t NETC_MDIOInit(netc_mdio_handle_t *handle, netc_mdio_config_t *config)
     uint32_t funcFlags = ENETC_PCI_TYPE0_PCI_CFH_CMD_MEM_ACCESS_MASK | ENETC_PCI_TYPE0_PCI_CFH_CMD_BUS_MASTER_EN_MASK;
     netc_mdio_hw_t *mdioBase;
     NETC_ETH_LINK_Type *base;
+    netc_hw_eth_port_idx_t port;
     uint32_t instance;
     status_t result;
 
     handle->mdio = config->mdio;
-
-    /* Port MDIO needs EP/Switch to enable the register access permission. */
-    if (handle->mdio.type != kNETC_EMdio)
-    {
-        instance = NETC_SocGetFuncInstance(handle->mdio.port);
-        if ((s_netcFuncBases[instance]->PCI_CFH_CMD & funcFlags) != funcFlags)
-        {
-            return kStatus_Fail;
-        }
-    }
 
     if (handle->mdio.type == kNETC_InternalMdio)
     {
@@ -351,6 +342,9 @@ status_t NETC_MDIOInit(netc_mdio_handle_t *handle, netc_mdio_config_t *config)
         }
         else
         {
+            SW0_PCI_HDR_TYPE0->PCI_CFH_CMD  |=
+        (ENETC_PCI_TYPE0_PCI_CFH_CMD_MEM_ACCESS_MASK | ENETC_PCI_TYPE0_PCI_CFH_CMD_BUS_MASTER_EN_MASK);
+
             base     = s_netcEthLinkBases[handle->mdio.port];
             mdioBase = (netc_mdio_hw_t *)(uintptr_t)&base->PEMDIOCR;
         }

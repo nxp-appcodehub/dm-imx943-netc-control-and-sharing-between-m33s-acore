@@ -14,11 +14,21 @@
 #include "rsc_table.h"
 #include "app_srtm.h"
 
-
+#define IERB_E2FAUXR 0x4CEB3244
 #define IERB_E3FAUXR 0x4CEB3344
 #define IERB_V0FAUXR 0x4CEB4004
 #define IERB_V1FAUXR 0x4CEB4044
 #define IERB_V2FAUXR 0x4CEB4084
+#define IERB_BASE 0x4CEB0000
+#define IERB_LBCR(a)                    (IERB_BASE + 0x1010 + 0x40 * (a))
+#define IERB_MDIO_PHYAD_PRTAD(addr)     (((addr) & 0x1f) << 8)
+#define IMX94_TIMER1_ID 1
+#define IERB_ETBCR(a)                   (IERB_BASE + 0x300c + 0x100 * (a))
+#define IMX94_ENETC2_OFFSET             2
+
+
+
+
 
 /*${header:end}*/
 
@@ -30,7 +40,7 @@
 /* PHY operation. */
 static netc_mdio_handle_t s_emdio_handle;
 static phy_rtl8211f_resource_t s_phy_rtl8211f_resource;
-static phy_dp8384x_resource_t s_phy_dp8384x_resource;
+static phy_dp8384x_resource_t s_phy_dp8384x_resource[EXAMPLE_SWT_MAX_PORT_NUM];
 static uint8_t s_phy_addr[EXAMPLE_PORT_NUM] = EXAMPLE_PHY_ADDR;
 static phy_handle_t s_phy_handle[EXAMPLE_PORT_NUM];
 /*${variable:end}*/
@@ -198,12 +208,12 @@ void BOARD_InitHardware(void)
     SDK_DelayAtLeastUs(20000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
     BOARD_EXPANDER_SetPinToHigh(BOARD_PCA6416_I2C3_S5_21_ID, ETH3_RST_B);
     SDK_DelayAtLeastUs(100000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
-
+#if 0
     BOARD_EXPANDER_SetPinToLow(BOARD_PCA6416_I2C3_S5_21_ID, ETH4_RST_B);
     SDK_DelayAtLeastUs(20000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
     BOARD_EXPANDER_SetPinToHigh(BOARD_PCA6416_I2C3_S5_21_ID, ETH4_RST_B);
     SDK_DelayAtLeastUs(100000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
-
+#endif
     /*
      * PCS(Physical Coding Sublayer) protocols on link0-5,
      * xxxx xxxx xxxx xxx1: 1G SGMII
@@ -245,6 +255,8 @@ void BOARD_InitHardware(void)
     }
 
 
+      /* ENETC2 PF */
+    *((volatile uint32_t *)IERB_E2FAUXR) = 7;
 
      /* ENETC3 PF */
     *((volatile uint32_t *)IERB_E3FAUXR) = 8;
@@ -257,7 +269,12 @@ void BOARD_InitHardware(void)
     
     /* ENETC3 VF2 */
     *((volatile uint32_t *)IERB_V2FAUXR) = 0xB;
+
+    *((volatile uint32_t *)IERB_LBCR(0)) = IERB_MDIO_PHYAD_PRTAD(2);
+    *((volatile uint32_t *)IERB_LBCR(1)) = IERB_MDIO_PHYAD_PRTAD(3);
+    *((volatile uint32_t *)IERB_LBCR(2)) = IERB_MDIO_PHYAD_PRTAD(5);
     
+     *((volatile uint32_t *)IERB_ETBCR(IMX94_ENETC2_OFFSET)) = IMX94_TIMER1_ID;
 
     
     /* Lock the IERB. */
@@ -276,6 +293,8 @@ void BOARD_InitHardware(void)
 status_t APP_MDIO_Init(void)
 {
     status_t result = kStatus_Success;
+       int i = kNETC_SWITCH0EthPort0;
+
 
     netc_mdio_config_t mdioConfig = {
         .isPreambleDisable = false,
@@ -283,21 +302,41 @@ status_t APP_MDIO_Init(void)
         .srcClockHz        = HAL_ClockGetRate(hal_clock_enet),
     };
 
-    mdioConfig.mdio.type = kNETC_EMdio;
-    result               = NETC_MDIOInit(&s_emdio_handle, &mdioConfig);
+    mdioConfig.mdio.type = kNETC_ExternalMdio;
+
+    for (; i <= kNETC_SWITCH0EthPort2; i++) {
+      mdioConfig.mdio.port = (netc_hw_eth_port_idx_t)i;
+      result               = NETC_MDIOInit(&s_emdio_handle, &mdioConfig);
+    }
 
     return result;
 }
 
-static status_t APP_EMDIOWrite(uint8_t phyAddr, uint8_t regAddr, uint16_t data)
-{
-    return NETC_MDIOWrite(&s_emdio_handle, phyAddr, regAddr, data);
+
+#define DEFINE_EMDIO_FUNCS(_name, _port)                                  \
+static status_t APP_EMDIOWrite_##_name(                                   \
+    uint8_t phyAddr,                                                      \
+    uint8_t regAddr,                                                      \
+    uint16_t data)                                                        \
+{                                                                          \
+    s_emdio_handle.mdio.port = (_port);                                    \
+    return NETC_MDIOWrite(&s_emdio_handle, phyAddr, regAddr, data);        \
+}                                                                          \
+                                                                           \
+static status_t APP_EMDIORead_##_name(                                     \
+    uint8_t phyAddr,                                                       \
+    uint8_t regAddr,                                                       \
+    uint16_t *pData)                                                       \
+{                                                                           \
+    s_emdio_handle.mdio.port = (_port);                                     \
+    return NETC_MDIORead(&s_emdio_handle, phyAddr, regAddr, pData);         \
 }
 
-static status_t APP_EMDIORead(uint8_t phyAddr, uint8_t regAddr, uint16_t *pData)
-{
-    return NETC_MDIORead(&s_emdio_handle, phyAddr, regAddr, pData);
-}
+DEFINE_EMDIO_FUNCS(swp0, kNETC_SWITCH0EthPort0)
+DEFINE_EMDIO_FUNCS(swp1, kNETC_SWITCH0EthPort1)
+DEFINE_EMDIO_FUNCS(swp2, kNETC_SWITCH0EthPort2)
+
+
 
 status_t APP_PHY_Init(int *port_id)
 {
@@ -313,22 +352,23 @@ status_t APP_PHY_Init(int *port_id)
         .ops       = &phyrtl8211f_ops,
     };
 
-    s_phy_rtl8211f_resource.write = APP_EMDIOWrite;
-    s_phy_rtl8211f_resource.read  = APP_EMDIORead;
     phy8211Config.resource = &s_phy_rtl8211f_resource;
 
     /* phydp8384x */
-    phy_config_t phy8384xConfig = {
-        .autoNeg   = true,
+    phy_config_t phy8384xConfig[2] = {
+      { .autoNeg   = true,
         .speed     = kPHY_Speed100M,
         .duplex    = kPHY_FullDuplex,
         .enableEEE = false,
-        .ops       = &phydp8384x_ops,
+        .ops       = &phydp8384x_ops,},
+      { .autoNeg   = true,
+        .speed     = kPHY_Speed100M,
+        .duplex    = kPHY_FullDuplex,
+        .enableEEE = false,
+        .ops       = &phydp8384x_ops,}
+
     };
 
-    s_phy_dp8384x_resource.write = APP_EMDIOWrite;
-    s_phy_dp8384x_resource.read  = APP_EMDIORead;
-    phy8384xConfig.resource = &s_phy_dp8384x_resource.write;
     if (port_id)
       i = *port_id;
     for (; i < EXAMPLE_PORT_NUM; i++) {
@@ -340,10 +380,20 @@ status_t APP_PHY_Init(int *port_id)
             case EXAMPLE_EP1_PORT:*/
             case EXAMPLE_SWT_PORT2:
                 phyConfig = &phy8211Config;
+                ((phy_rtl8211f_resource_t *)phyConfig->resource)->read = APP_EMDIORead_swp2;
+                ((phy_rtl8211f_resource_t *)phyConfig->resource)->write = APP_EMDIOWrite_swp2;
                 break;
             case EXAMPLE_SWT_PORT0:
+                phy8384xConfig[0].resource = &s_phy_dp8384x_resource[0];
+                phyConfig = &phy8384xConfig[0];
+                ((phy_dp8384x_resource_t *)phyConfig->resource)->read = APP_EMDIORead_swp0;
+                ((phy_dp8384x_resource_t *)phyConfig->resource)->write = APP_EMDIOWrite_swp0;
+                break;
             case EXAMPLE_SWT_PORT1:
-                phyConfig = &phy8384xConfig;
+                phy8384xConfig[1].resource = &s_phy_dp8384x_resource[1];
+                phyConfig = &phy8384xConfig[1];
+                ((phy_dp8384x_resource_t *)phyConfig->resource)->read = APP_EMDIORead_swp1;
+                ((phy_dp8384x_resource_t *)phyConfig->resource)->write = APP_EMDIOWrite_swp1;
                 break;
             case  EXAMPLE_SWT_PORT3:
                 return result;
