@@ -54,7 +54,7 @@ The i.MX8MP is configured to operate as two stations:
 
 - **NS0 (blue)**, connected to swp0 on the i.MX 943 board
 - **NS1 (black)**, connected to swp1 on the same board
-- The third external switch port, **swp3 (light grey)**, is connected to a PC that is not visible in the image.
+- The third external switch port, **swp2 (light grey)**, is connected to a PC that is not visible in the image.
 
 The M33-S console is routed through the Arduino connectors. Console access is provided via the three-wire green-yellow-orange cable visible on the right side of the image:
 ```
@@ -102,15 +102,14 @@ From *linux_patches* folder apply the following patch
 
 
 ```
-git am 0001-enetc_vf-Increase-sleep-interval-between-consecutive.patch
-```
-To assign the NETC block entirely to M33 core, a new device tree will be used - *imx943-evk-netc-share.dts*.
-
-Copy the device tree in *arch/arm64/boot/dts/freescale* and apply the patch below:
-
-```
 git am 0001-netc-Add-dts-for-netc-sharing.patch
 ```
+This patch creates a new device tree  - *imx943-evk-netc-share.dts*.
+
+The device tree, ensures that the NETC control block, NETC mix and ENETC3 are not
+configured by the A-core. It also enables a second standalone port on A-core, namely ENETC2.
+Additionally, VSI1, which belongs to ENETC3, is enabled on A-core and configured via ENETC3 PSI.
+
 
 **Changes applied in system manager**
 
@@ -119,7 +118,7 @@ sharing between A and M33-S core.
 
 From *sm_patches* folder apply the next patch:
 
-```ore 
+```
 git am 0001-Update-config-for-NETC-sharing.patch
 ```
 
@@ -134,7 +133,7 @@ git am 0001-soc-Add-support-for-a55-and-m33s-flash-images.patch
 
 
 #### 3.1.1 Rebuild the images
-After applying the changes, re-build the kernel, u-boot and system manager.
+After applying the changes, re-build the device tree, u-boot and system manager.
 
 The  application from this repo that will run on M33-S, will be compiled using IAR Workbench.
 To begin, load the project into the IDE by opening the following file: *<your_path>/imx943-m33s-netc-demo/boards/imx943evk/driver_examples/netc/txrx_transfer/cm33_core1/iar/netc_txrx_transfer_cm33_core1.ewp*
@@ -221,7 +220,7 @@ ip link set eth0 netns ns0
 ip netns exec ns1 bash -c "ifconfig eth1 193.3.3.1 up"
 ip netns exec ns0 bash -c "ifconfig eth0 193.3.3.2 up"
 
-#On iMX 943 M33
+#On iMX943 M33
 #Port Mask = swp0,swp1, action = kNETC_FDBLookUpWithDiscard
 vlan add 100 3 3
 #Port Mask = swp0,swp1, action = kNETC_FDBLookUpWithFlood
@@ -263,7 +262,7 @@ ip netns exec ns1 nload eth1 -m
 #Change MAC on NS0 to
 ip netns exec ns0 ifconfig eth0 hw ether 00:10:99:00:00:03
 
-#On iMX 943 M33
+#On iMX943 M33
 #Source Port=SWP0, action=kNETC_IPFForwardDiscard
 ingr port filt add smac 00:10:99:00:00:03 sport 0 action 0
 
@@ -284,7 +283,7 @@ ip netns exec ns1 nload eth1 -m
 ip netns exec ns0 ifconfig eth0 hw ether 00:10:99:00:00:33
 ip netns exec ns1 ifconfig eth1 hw ether 00:10:99:00:00:02
 
-#On iMX 943 M33
+#On iMX943 M33
 #Source Port=SWP0, action=kNETC_IPFRedirectToMgmtPort
 ingr port filt add smac 00:10:99:00:00:33 sport 0 action 2
 
@@ -324,11 +323,12 @@ This step is required because the M33-S core has already configured the switch a
 #### 3.4.2 Reflecting packets from M33 to Linux domain - dark blue flow
 
 ```
-#bring up the linux interface that was probed
-ifconfig eth0 promisc
+#bring up the linux interface that was probed.
+#on Linux console from 943 execute
+ifconfig eth1 promisc
 
 #capture packets
-tcpdump -i eth0
+tcpdump -i eth1
 
 #On 943 M33 execute
 management 3
@@ -339,14 +339,14 @@ management 3
 #### 3.4.3 ssh session NS1 -- Linux domain
 
 ```
-#On iMX 943 M33
+#On iMX943 M33
 fdb add 00:00:fa:fa:dd:a0 dev 8
 fdb add ff:ff:ff:ff:ff:ff dev 15
 #Only if it was not added
 #fdb add 00:10:99:00:00:02 dev 2
 
-#On Linux domain set ip for VSI1
-ifconfig eth0 193.3.3.3
+#On Linux domain (943) set ip for VSI1
+ifconfig eth1 193.3.3.3
 
 #On IMX8MP
 ip netns exec ns1 bash
@@ -365,7 +365,7 @@ ip netns exec ns0 ifconfig eth0 hw ether 00:10:99:00:00:05
 
 #make sure to kill any pktgen script that was running
 
-#On iMX 943
+#On iMX943
 #Add stream rules
 stream add smac 00:10:99:00:00:05 vid 100 index 1
 stream add smac 00:10:99:00:00:06 vid 100 index 2
@@ -375,7 +375,7 @@ stream add smac 00:10:99:00:00:06 vid 100 index 2
 ip netns exec ns0 /home/root/samples/pktgen/pktgen_sample01_simple_v100_p2.sh -i eth0 -m 00:10:99:00:00:02 -s 1500 -n 0&
 
 #Test1 expected result: traffic belonging to stream 1 is received on NS1
-#Check switch statistics of stream 1 on iMX 943: counter must increase
+#Check switch statistics of stream 1 on iMX943: counter must increase
 stream table stats stream_index 1
 
 ```
@@ -390,7 +390,7 @@ stream table stats stream_index 1
 ip netns exec ns0 ifconfig eth0 hw ether 00:10:99:00:00:05
 
 
-#On iMX 943
+#On iMX943
 #Add a stream filter entry for stream 1. Stream is filtered based on VLAN pcp=2. The entry is policed by adding policer 1. 
 stream filter add stream_index 1 prio 2 policer 1
 
@@ -417,7 +417,7 @@ ip netns exec ns1 nload eth1 -m
 #Change MAC on NS0 to
 ip netns exec ns0 ifconfig eth0 hw ether 00:10:99:00:00:06
 
-#On iMX 943
+#On iMX943
 #Add another stream filter entry in stream filter table for stream 2.
 # Stream is filtered based on VLAN pcp=3. This entry will be “gated” by stream gate entry 1.
 
@@ -478,7 +478,7 @@ tas add port 1 maxsdu 1000 1000 800 1000 1000 1000 1000 1000 base time 100000 nu
 #bandwidth: 100Mbps
 #stream4(preemptable): 900B frames 50% bandwidth smac = 00:10:99:00:00:10 dmac=00:10:99:00:00:13 vid = 201 prio = 3
 #stream5(express): 100B frames 50% bandwidth smac = 00:10:99:00:00:11 dmac=00:10:99:00:00:14 vid = 200 prio = 2
-#On iMX 943
+#On iMX943
 # port mask includes ports SWP0,SWP1,SWP2
 vlan add 200 7 3
 vlan add 201 7 3
@@ -497,7 +497,7 @@ taskset --cpu-list 2 mz eth0 -c 0 -Q 2:200 -a 00:10:99:00:00:11 -b 00:10:99:00:0
 ifconfig eth1 promisc
 nload eth1 –m
 
-#Test2: on iMX 943 create a Qbv schedule with 2 GCL entries
+#Test2: on iMX943 create a Qbv schedule with 2 GCL entries
 #TC 3 - will be preemptible, TC 2 - will be for express frames
 tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0x04:80000:H 0x08:80000:R
 
@@ -509,7 +509,7 @@ nload -m eth1
 
 #Test2 expected result: express traffic is shaped and occupies half of the cycle time on TC 2. The rate is half of 50Mbps that is 25Mbps. #The preemptible TC 3 traffic class, will schedule traffic and will use the HOLD/RELEASE mechanism  to prevent the 900B frames to be scheduled and reach in the express traffic window. Packets will be fragmented.
 
-#Test3: on iMX 943 create two Qbv schedules, TC 3 and TC 2 are express traffic classes
+#Test3: on iMX943 create two Qbv schedules, TC 3 and TC 2 are express traffic classes
 tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0x04:80000:S 0x08:80000:S
 
 #Test3 expected result: traffic rate is aprox half of the 100Mbps that is around 50Mbps (including both streams). In this case traffic is not preempted. No fragmentation happens on NS1
@@ -641,6 +641,10 @@ Once the input data is received, the qav configuration can be applied for each t
 
 ```
 
+### 3.11 Using  ENETC2 standalone port available on iMX943
+The current application enables a second standalone port - ENETC2 that can be used in parallel with VSI1 from A-core domain.
+Connect the port on the right of swp2 (see section 3. Setup) with a test station. Assign an IP address to ENETC2 interface (e.g. ifconfig eth0 192.168.1.1); make sure that on the test station there is an interface in the same subnet (e.g. 192.168.1.0/24). Finally verify the connectivity.
+
 ## 4. Results<a name="step4"></a>
 The results observed in the previous sections can be replicated using separate physical machines, rather than relying on a single station with multiple ethernet interfaces assigned to distinct network namespaces.
 
@@ -664,6 +668,7 @@ If help is needed please open a community ticket with the topic NETC followed by
 [![Peripheral badge](https://img.shields.io/badge/Peripheral-ENETC-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+ENETC+in%3Areadme&type=Repositories)
 [![Peripheral badge](https://img.shields.io/badge/Peripheral-VSI-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+VSI+in%3Areadme&type=Repositories)
 [![Peripheral badge](https://img.shields.io/badge/Peripheral-Qbv-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+Qbv+in%3Areadme&type=Repositories)
+[![Peripheral badge](https://img.shields.io/badge/Peripheral-Qav-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+Qav+in%3Areadme&type=Repositories)
 [![Peripheral badge](https://img.shields.io/badge/Peripheral-Qci-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+Qci+in%3Areadme&type=Repositories)
 [![Peripheral badge](https://img.shields.io/badge/Peripheral-PSPF-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+PSPF+in%3Areadme&type=Repositories)
 [![Peripheral badge](https://img.shields.io/badge/Peripheral-TSN-yellow)](https://github.com/search?q=org%3Anxp-appcodehub+TSN+in%3Areadme&type=Repositories)
