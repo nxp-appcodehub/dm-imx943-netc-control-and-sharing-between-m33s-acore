@@ -333,7 +333,7 @@ void clear_screen() {
         PRINTF("\r\n"
        "+--------------------------------------------+\r\n"
        "|   NETC Switch Network Configuration Console|\r\n"
-       "|                   v1.1                     |\r\n"
+       "|                   v2.0                     |\r\n"
        "+--------------------------------------------+\r\n"
        "\r\n"
        "  Supported Features:\r\n"
