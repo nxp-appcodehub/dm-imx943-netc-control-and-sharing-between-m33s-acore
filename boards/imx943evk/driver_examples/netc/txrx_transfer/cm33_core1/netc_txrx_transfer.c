@@ -19,7 +19,7 @@
 #include "rsc_table.h"
 #include "app_srtm.h"
 #include "fsl_netc_msg.h"
-
+#include "semphr.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -52,11 +52,14 @@ netc_tb_vf_config_t vfEntryCfg;
 netc_tb_fdb_config_t fdbEntryCfg;
 #endif
 
-#define NETC_MSGINTR_IRQ MSGINTR1_IRQn
+#define NETC_MSGINTR_IRQ MSGINTR2_IRQn
 #define NETC_MSGINTR_PRIORITY 6U
 
 #define SI_MSG_THREAD_STACKSIZE 2000
-#define SI_MSG_THREAD_PRIO 3
+#define SI_MSG_THREAD_PRIO 4
+
+/* Global semaphore for PSI-VSI signaling */
+static SemaphoreHandle_t g_msg_semaphore = NULL;
 
 uint32_t rpEID = 1;
 #if ENPOLICER
@@ -1025,25 +1028,45 @@ void handle_tas_add(CommandTokens* tokens) {
 
 static void netc_si_msg_thread(void *arg)
 {
-    status_t result               = kStatus_Success;
+    status_t result;
     netc_psi_rx_msg_t msgInfo;
-
+    ENETC_SI_Type *base = g_ep_handle.hw.si;
+    uint32_t mr_status, mr_mask;
+    int msg_count = 0;
+    
+    mr_mask = kNETC_PsiRxMsgFromVsi1Flag;
+    
     while (1)
     {
-        result = EP_PsiRxMsg(&g_ep_handle, kNETC_Vsi1, &msgInfo);
-        if (result == kStatus_Success)
-        {
-            EP_PsiHandleRxMsg(&g_ep_handle, 1, &msgInfo);
+        /* Wait for interrupt to signal work */
+        xSemaphoreTake(g_msg_semaphore, portMAX_DELAY);
+        
+        for (;;) {
+            mr_status = base->PSI_A.PSIMSGRR & mr_mask;
+            
+            if (!mr_status) {
+                /* No more messages - clear and re-enable interrupt */
+                //PRINTF("M-core: No more messages, re-enabling interrupt\r\n");
+                EP_PsiClearStatus(&g_ep_handle, mr_mask);
+                //vTaskDelay(pdMS_TO_TICKS(5));
+                EP_PsiEnableInterrupt(&g_ep_handle, mr_mask, true);
+                break;
+            }
+            
+           // PRINTF("M-core: PSIMSGRR=0x%08x, processing message\r\n", mr_status);
+            
+            /* Handle the message */
+            result = EP_PsiRxMsg(&g_ep_handle, kNETC_Vsi1, &msgInfo);
+            if (result == kStatus_Success) {
+                msg_count++;
+                //PRINTF("M-core: Processing message #%d\r\n",
+                      // msg_count);
+                
+                EP_PsiHandleRxMsg(&g_ep_handle, 1, &msgInfo);
+                
+                //PRINTF("M-core: Msg #%d handled\r\n", msg_count);
+            }
         }
-
-#if (NETC_VSI_NUM_USED > 1)
-        result = EP_PsiRxMsg(ethernetif->ep_handle, kNETC_Vsi2, &msgInfo);
-        if (result == kStatus_Success)
-        {
-            EP_PsiHandleRxMsg(ethernetif->ep_handle, 2, &msgInfo);
-        }
-#endif
-        vTaskDelay(pdMS_TO_TICKS(1));
     }
 }
 
@@ -1308,6 +1331,7 @@ static status_t APP_SwtReclaimCallback(swt_handle_t *handle, netc_tx_frame_info_
 
 void msgintrCallback(MSGINTR_Type *base, uint8_t channel, uint32_t pendingIntr)
 {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 #if (NETC_VSI_NUM_USED > 0)
     uint32_t msg_recv_flags = kNETC_PsiRxMsgFromVsi1Flag;
 #endif
@@ -1327,7 +1351,10 @@ void msgintrCallback(MSGINTR_Type *base, uint8_t channel, uint32_t pendingIntr)
     /* PSI Rx interrupt */
     if ((pendingIntr & (1U << SI_COM_INTR_MSG_DATA)) != 0U)
     {
-        EP_PsiClearStatus(&g_ep_handle, msg_recv_flags);
+       EP_PsiEnableInterrupt(&g_ep_handle, kNETC_PsiRxMsgFromVsi1Flag, false);
+       /* Wake up deferred task */
+      xSemaphoreGiveFromISR(g_msg_semaphore, &xHigherPriorityTaskWoken);
+      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
 #endif
 }
@@ -2521,7 +2548,13 @@ int main(void)
     status_t result = kStatus_Success;
     //uint32_t index;
 
-    
+    g_msg_semaphore = xSemaphoreCreateBinary();
+    if (g_msg_semaphore == NULL) {
+    /* Semaphore creation FAILED - system will hang */
+      PRINTF("FATAL: Semaphore creation failed!\n");
+      while(1);
+    }
+
     BOARD_InitHardware();
 
     result = APP_MDIO_Init();
