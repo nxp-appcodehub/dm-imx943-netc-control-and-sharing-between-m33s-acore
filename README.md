@@ -476,8 +476,9 @@ tas add port 1 maxsdu 1000 1000 800 1000 1000 1000 1000 1000 base time 100000 nu
 ```
 #On NS0
 #bandwidth: 100Mbps
-#stream4(preemptable): 900B frames 50% bandwidth smac = 00:10:99:00:00:10 dmac=00:10:99:00:00:13 vid = 201 prio = 3
-#stream5(express): 100B frames 50% bandwidth smac = 00:10:99:00:00:11 dmac=00:10:99:00:00:14 vid = 200 prio = 2
+#stream4(preemptable): 900B frames 50% bandwidth smac = 00:10:99:00:00:11 dmac=00:10:99:00:00:14 vid = 200 prio = 2
+#stream5(express): 100B frames 50% bandwidth smac = 00:10:99:00:00:10 dmac=00:10:99:00:00:13 vid = 201 prio = 3
+
 #On iMX943
 # port mask includes ports SWP0,SWP1,SWP2
 vlan add 200 7 3
@@ -487,19 +488,19 @@ vlan add 201 7 3
 fdb add 00:10:99:00:00:13 dev 2
 fdb add 00:10:99:00:00:14 dev 2
 #permit all the traffic first, as the previous test used Qbv and shaped traffic
-tas add port 1 maxsdu 1000 1000 800 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0xff:800000:S 0xff:800000:S
+tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0xff:800000:S 0xff:800000:S
 
 #Test1: From NS0 send 2 Streams
-taskset --cpu-list 1 mz eth0 -c 0 -Q 3:201 -a 00:10:99:00:00:10 -b 00:10:99:00:00:13 -A 193.3.3.2 -B 193.3.3.1 -t udp -p 900&
-taskset --cpu-list 2 mz eth0 -c 0 -Q 2:200 -a 00:10:99:00:00:11 -b 00:10:99:00:00:14 -A 193.3.3.2 -B 193.3.3.1 -t udp -p 100 &
+taskset --cpu-list 1 mz eth0 -c 0 -Q 3:201 -a 00:10:99:00:00:10 -b 00:10:99:00:00:13 -A 193.3.3.2 -B 193.3.3.1 -t udp -p 100&
+taskset --cpu-list 2 mz eth0 -c 0 -Q 2:200 -a 00:10:99:00:00:11 -b 00:10:99:00:00:14 -A 193.3.3.2 -B 193.3.3.1 -t udp -p 900&
 
 #Test1 expected result: traffic received on NS1 line rate
 ifconfig eth1 promisc
 nload eth1 –m
 
 #Test2: on iMX943 create a Qbv schedule with 2 GCL entries
-#TC 3 - will be preemptible, TC 2 - will be for express frames
-tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0x04:80000:H 0x08:80000:R
+#TC 2 - will be preemptible, TC 3 - will be for express frames
+tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0x08:80000:H 0x04:80000:R
 
 #On NS1: Enable preemmption
 ethtool --set-frame-preemption eth1 fp  on
@@ -507,7 +508,7 @@ watch -n 1 --difference "ethtool -S eth1 | grep -i mmc_rx_fpe_fragment_cntr"
 
 nload -m eth1
 
-#Test2 expected result: express traffic is shaped and occupies half of the cycle time on TC 2. The rate is half of 50Mbps that is 25Mbps. #The preemptible TC 3 traffic class, will schedule traffic and will use the HOLD/RELEASE mechanism  to prevent the 900B frames to be scheduled and reach in the express traffic window. Packets will be fragmented.
+#Test2 expected result: express traffic is shaped and occupies half of the cycle time on TC 3. The rate is half of 50Mbps that is 25Mbps. #The preemptible TC 2 traffic class, will schedule traffic and will use the HOLD/RELEASE mechanism  to prevent the 900B frames to be scheduled and reach in the express traffic window. Packets will be fragmented.
 
 #Test3: on iMX943 create two Qbv schedules, TC 3 and TC 2 are express traffic classes
 tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 num_sched_entries 2 schedules 0x04:80000:S 0x08:80000:S
@@ -517,6 +518,7 @@ tas add port 1 maxsdu 1000 1000 1000 1000 1000 1000 1000 1000 base time 100000 n
 #On NS1
 nload eth1 -m
 
+#mmc_rx_fpe_fragment_cntr will not be incremented
 ```
 
 ## 3.10 Exercise: Enabling credit based shaper (Qav)
