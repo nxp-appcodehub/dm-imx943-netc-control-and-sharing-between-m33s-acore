@@ -1,12 +1,14 @@
-From 4f7d21d1c16f04588b3470ea0a41657f7e6dde9e Mon Sep 17 00:00:00 2001
+From fc8221d5d6cb46544a0c3997465edf53af7808c9 Mon Sep 17 00:00:00 2001
 From: Radu Bulie <radu-andrei.bulie@nxp.com>
 Date: Tue, 16 Sep 2025 22:30:55 +0300
 Subject: [PATCH] netc: Add dts for netc sharing
 
 Signed-off-by: Radu Bulie <radu-andrei.bulie@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../dts/freescale/imx943-evk-netc-share.dts   | 172 ++++++++++++++++++
+ 2 files changed, 173 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx943-evk-netc-share.dts
 
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
 index a2403f98e4e0..cc047e408d11 100644
@@ -20,6 +22,184 @@ index a2403f98e4e0..cc047e408d11 100644
  
  imx943-evk-pcie1-ep-dtbs := imx943-evk.dtb imx943-evk-pcie1-ep.dtbo
  dtb-$(CONFIG_ARCH_MXC) += imx943-evk-pcie1-ep.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx943-evk-netc-share.dts b/arch/arm64/boot/dts/freescale/imx943-evk-netc-share.dts
+new file mode 100644
+index 000000000000..62977971ded5
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx943-evk-netc-share.dts
+@@ -0,0 +1,172 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2025 NXP
++ */
++
++#include "imx943-evk.dts"
++/delete-node/ &netc_blk_ctrl;
++/ {
++
++
++	aliases {
++		/delete-property/ ethernet0;
++		/delete-property/ ethernet1;
++		/delete-property/ ethernet2;
++	};
++
++	soc {
++                netc_bus0: pcie@82224000 {
++                        compatible = "nxp,netc-rpmsg-pci-host-ecam";
++                        reg = <0x0 0x82224000 0x0 0x100000>;
++                        /* Must be 3. */
++                        #address-cells = <3>;
++                        /* Must be 2. */
++                        #size-cells = <2>;
++                        msi-parent = <&its>;
++                        device_type = "pci";
++                        bus-range = <0x0 0x0>;
++                        msi-map =  <0x00 &its 0x68 0x1>,
++				   <0x40 &its 0x69 0x1>, //ENETC3 VF0
++                                   <0x80 &its 0x6a 0x1>, //ENETC3 VF1
++                                   <0xC0 &its 0x6b 0x1>; //ENETC3 VF2
++
++
++                                  /* ENETC3 - non-prefetchable memory */
++                        ranges = <0x02000000 0x0 0x4CD40000  0x0 0x4CD40000  0x0 0x40000
++                                  /* ENETC3: VF0-2 BAR0 - non-prefetchable memory */
++                                  0x02000000 0x0 0x4CE50000  0x0 0x4CE50000  0x0 0x30000
++                                  /* ENETC3: VF0-2 BAR2 - prefetchable memory */
++                                  0x42000000 0x0 0x4ce80000  0x0 0x4ce80000  0x0 0x30000>;
++                        power-domains = <&scmi_devpd IMX94_PD_NETC>;
++
++                        enetc3: ethernet@0,0 {
++				compatible = "pci1131,080b";
++                                reg = <0x0 0 0 0 0>;
++				fixed-link {
++                                                speed = <2500>;
++                                                full-duplex;
++                                                pause;
++                                        };
++
++                        };
++                };
++		netc_bus1: pcie@4cb00000 {
++				compatible = "pci-host-ecam-generic";
++				reg = <0x0 0x4cb00000 0x0 0x100000>;
++				#address-cells = <3>;
++				#size-cells = <2>;
++				device_type = "pci";
++				linux,pci-domain = <1>;
++				bus-range = <0x1 0x1>;
++				msi-map = <0x100 &its 0x65 0x1>, //ENETC0 PF
++					  <0x101 &its 0x62 0x1>, //Timer1
++					  <0x140 &its 0x66 0x1>, //ENETC1 PF
++					  <0x180 &its 0x67 0x1>, //ENETC2 PF
++					  <0x181 &its 0x63 0x1>, //Timer2
++					  <0x1C0 &its 0x60 0x1>; //EMDIO
++					 /* ENETC 0-2 BAR0 - non-prefetchable memory */
++				ranges = <0x02000000 0x0 0x4cC80000  0x0 0x4cc80000  0x0 0xc0000
++					 /* Timer 1-2 and EMDIO BAR0 - non-prefetchable memory */
++					 0x02000000 0x0 0x4cda0000  0x0 0x4cda0000  0x0 0x60000
++					 /* Timer 1-2 and EMDIO BAR2 - prefetchable memory */
++					 0x42000000 0x0 0x4ce20000  0x0 0x4ce20000  0x0 0x30000>;
++
++				enetc0: ethernet@0,0 {
++					compatible = "pci1131,e101";
++					reg = <0x10000 0 0 0 0>;
++					nvmem-cells = <&eth_mac1>;
++					nvmem-cell-names = "mac-address";
++					status = "disabled";
++				};
++
++				netc_timer1: ethernet@0,1 {
++					compatible = "pci1131,ee02";
++					reg = <0x10100 0 0 0 0>;
++					status = "disabled";
++				};
++
++				rcec@1,0 {
++					compatible = "pci1131,e001";
++					reg = <0x10800 0 0 0 0>;
++					interrupts = <GIC_SPI 359 IRQ_TYPE_LEVEL_HIGH>;
++				};
++
++				enetc1: ethernet@8,0 {
++					compatible = "pci1131,e101";
++					reg = <0x14000 0 0 0 0>;
++					nvmem-cells = <&eth_mac2>;
++					nvmem-cell-names = "mac-address";
++					status = "disabled";
++				};
++
++				enetc2: ethernet@10,0 {
++					compatible = "pci1131,e101";
++					reg = <0x18000 0 0 0 0>;
++					nvmem-cells = <&eth_mac3>;
++					nvmem-cell-names = "mac-address";
++					status = "disabled";
++				};
++
++				netc_timer2: ethernet@10,1 {
++					compatible = "pci1131,ee02";
++					reg = <0x18100 0 0 0 0>;
++					status = "disabled";
++				};
++
++				netc_emdio: mdio@18,0 {
++					compatible = "pci1131,ee00";
++					reg = <0x1c000 0 0 0 0>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++					status = "disabled";
++				};
++			};
++
++
++        };
++};
++
++
++&enetc2 {
++        clocks = <&scmi_clk IMX94_CLK_MAC5>;
++        clock-names = "enet_ref_clk";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_eth4>;
++        phy-handle = <&ethphy4>;
++        phy-mode = "rgmii-id";
++        status = "okay";
++};
++
++&netc_emdio {
++        pinctrl-names = "default";
++        //pinctrl-0 = <&pinctrl_emdio>;
++        status = "okay";
++/*
++        ethphy0: ethernet-phy@2 {
++                reg = <0x2>;
++        };
++
++        ethphy1: ethernet-phy@3 {
++                reg = <0x3>;
++        };
++
++        ethphy2: ethernet-phy@5 {
++                reg = <0x5>;
++                realtek,clkout-disable;
++        };
++
++        ethphy3: ethernet-phy@6 {
++                reg = <0x6>;
++                realtek,clkout-disable;
++        };
++*/
++        ethphy4: ethernet-phy@7 {
++                reg = <0x7>;
++                realtek,clkout-disable;
++        };
++};
++
++/* emdio pads pinmux is configured by M33 app - remove the pinctrl from dts*/
++/delete-node/ &pinctrl_emdio;
++/delete-node/ &pinctrl_eth3;
++/delete-node/ &pinctrl_switch;
 -- 
 2.34.1
 
